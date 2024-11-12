@@ -1,10 +1,3 @@
-//
-//  EventlyTests.swift
-//  EventlyTests
-//
-//  Created by Łukasz Janiszewski on 12/11/2024.
-//
-
 import XCTest
 @testable import Evently
 

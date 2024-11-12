@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Evently
-//
-//  Created by Łukasz Janiszewski on 12/11/2024.
-//
-
 import SwiftUI
 
 struct ContentView: View {
