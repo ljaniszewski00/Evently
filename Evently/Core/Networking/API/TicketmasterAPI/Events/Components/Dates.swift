@@ -1,5 +1,9 @@
 struct Dates: Decodable {
     let startDate: StartDate
+    
+    enum CodingKeys: String, CodingKey {
+        case startDate = "start"
+    }
 }
 
 struct StartDate: Decodable {

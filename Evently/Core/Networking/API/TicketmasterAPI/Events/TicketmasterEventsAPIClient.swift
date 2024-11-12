@@ -35,7 +35,7 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(EventResponse.self, from: data)
-            return result.events
+            return result.embedded.events
         } catch {
             throw APIError.decodingError
         }

@@ -1,7 +1,7 @@
 struct Classifications: Decodable {
     let segment: Segment
     let genre: Genre
-    let subgenre: Subgenre
+    let subgenre: Subgenre?
 }
 
 struct Segment: Decodable {

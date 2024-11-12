@@ -1,7 +1,11 @@
 struct EventResponse: Decodable {
-    let events: [Event]
+    let embedded: ResponseEmbedded
     
     enum CodingKeys: String, CodingKey {
-        case events = "_embedded"
+        case embedded = "_embedded"
     }
+}
+
+struct ResponseEmbedded: Decodable {
+    let events: [Event]
 }

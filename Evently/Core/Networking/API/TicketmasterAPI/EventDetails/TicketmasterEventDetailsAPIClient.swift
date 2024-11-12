@@ -38,6 +38,7 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
             let result = try decoder.decode(EventDetails.self, from: data)
             return result
         } catch {
+            print(error)
             throw APIError.decodingError
         }
     }
