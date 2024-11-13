@@ -18,6 +18,9 @@ struct EventsListView: View {
                         await viewModel.loadMoreEvents()
                     }
                 }
+                .listRowBackground(
+                    EmptyView()
+                )
         }
         .refreshable {
             await viewModel.loadFirstEvents()
@@ -56,9 +59,9 @@ struct EventsListView: View {
 }
 
 #Preview {
-    EventsListView(viewModel:
-                    EventsListViewModel(
-                        apiClient: TicketmasterEventsAPIClient()
-                    )
+    EventsListView(
+        viewModel: EventsListViewModel(
+            apiClient: TicketmasterEventsAPIClient()
+        )
     )
 }

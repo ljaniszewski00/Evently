@@ -8,11 +8,17 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             EventsListView(viewModel: viewModel)
-                .navigationTitle("Wydarzenia")
+                .navigationTitle(Views.Constants.navigationTitle)
         }
     }
 }
 
 #Preview {
     ContentView()
+}
+
+extension Views {
+    struct Constants {
+        static let navigationTitle: String = "Events"
+    }
 }

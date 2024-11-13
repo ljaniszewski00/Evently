@@ -21,7 +21,8 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "apikey", value: apiKey)
+            URLQueryItem(name: TicketmasterURLComponents.apiKey.rawValue,
+                         value: apiKey)
         ]
         
         guard let url = urlComponents.url else {
