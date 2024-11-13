@@ -8,16 +8,19 @@ final class EventsListViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private var currentPage = 0
-    private let apiClient: TicketmasterEventsAPIClientProtocol = TicketmasterEventsAPIClient()
+    private let apiClient: TicketmasterEventsAPIClientProtocol
     
-    func loadEvents() async {
+    init(apiClient: TicketmasterEventsAPIClientProtocol) {
+        self.apiClient = apiClient
+    }
+    
+    func loadEvents(forPage: Int? = nil) async {
         isLoading = true
         
         do {
-            events = try await apiClient.fetchEvents(page: currentPage)
-            currentPage = 0
+            let fetchedEvents = try await apiClient.fetchEvents(page: forPage ?? currentPage)
+            events.append(contentsOf: fetchedEvents)
         } catch {
-            print(error.localizedDescription)
             handleError(error)
         }
         
@@ -27,17 +30,13 @@ final class EventsListViewModel: ObservableObject {
     func loadMoreEvents() async {
         guard !isLoading else { return }
         
-        isLoading = true
+        currentPage += 1
         
-        do {
-            let nextPage = try await apiClient.fetchEvents(page: currentPage + 1)
-            events.append(contentsOf: nextPage)
-            currentPage += 1
-        } catch {
-            handleError(error)
-        }
-        
-        isLoading = false
+        await loadEvents()
+    }
+    
+    func checkEventIsLastEvent(_ event: Event) -> Bool? {
+        events.last?.id == event.id
     }
     
     private func handleError(_ error: Error) {

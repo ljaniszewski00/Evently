@@ -9,7 +9,11 @@ final class EventDetailsViewModel: ObservableObject {
     
     private let apiClient: TicketmasterEventDetailsAPIClientProtocol
     
-    init(eventId: String) {
+    init(apiClient: TicketmasterEventDetailsAPIClientProtocol) {
+        self.apiClient = apiClient
+    }
+    
+    init(eventId: String, apiClient: TicketmasterEventDetailsAPIClientProtocol) {
         self.apiClient = TicketmasterEventDetailsAPIClient(eventId: eventId)
     }
     
