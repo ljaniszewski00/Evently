@@ -1,4 +1,4 @@
-struct Dates: Decodable {
+struct Dates: Codable {
     let startDate: StartDate
     
     enum CodingKeys: String, CodingKey {
@@ -6,7 +6,7 @@ struct Dates: Decodable {
     }
 }
 
-struct StartDate: Decodable {
+struct StartDate: Codable {
     let localDate: String
     let localTime: String?
 }

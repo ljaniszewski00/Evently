@@ -1,4 +1,4 @@
-struct EventDetails: Identifiable, Decodable {
+struct EventDetails: Codable {
     let id: String
     let name: String
     let dates: Dates
@@ -10,5 +10,15 @@ struct EventDetails: Identifiable, Decodable {
     
     enum CodingKeys: String, CodingKey {
         case id, name, dates, place, classifications, priceRanges, images, seatMap
+    }
+}
+
+extension EventDetails: Equatable, Identifiable, Hashable {
+    static func ==(lhs: EventDetails, rhs: EventDetails) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

@@ -4,7 +4,10 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
     var endpoint: APIEndpoint
     var apiKeyProvider: APIKeyProviding = TicketmasterAPIKeyProvider()
     
+    var eventId: String
+    
     init(eventId: String) {
+        self.eventId = eventId
         self.endpoint = TicketmasterAPIEndpoint.eventDetails(eventId: eventId)
     }
     
@@ -45,5 +48,7 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
 }
 
 protocol TicketmasterEventDetailsAPIClientProtocol {
+    var eventId: String { get }
+    
     func fetchEventDetails() async throws -> EventDetails
 }

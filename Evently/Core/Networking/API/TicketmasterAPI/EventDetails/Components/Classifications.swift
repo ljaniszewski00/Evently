@@ -1,17 +1,17 @@
-struct Classifications: Decodable {
+struct Classifications: Codable {
     let segment: Segment
     let genre: Genre
     let subgenre: Subgenre?
 }
 
-struct Segment: Decodable {
+struct Segment: Codable {
     let name: String
 }
 
-struct Genre: Decodable {
+struct Genre: Codable {
     let name: String
 }
 
-struct Subgenre: Decodable {
+struct Subgenre: Codable {
     let name: String
 }

@@ -1,3 +1,3 @@
-struct SeatMap: Decodable {
+struct SeatMap: Codable {
     let staticUrl: String
 }

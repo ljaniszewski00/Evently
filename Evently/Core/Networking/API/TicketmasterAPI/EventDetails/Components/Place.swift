@@ -1,19 +1,19 @@
-struct Place: Decodable {
+struct Place: Codable {
     let name: String
     let address: Address
     let city: City
     let country: Country
 }
 
-struct Country: Decodable {
+struct Country: Codable {
     let name: String
 }
 
-struct City: Decodable {
+struct City: Codable {
     let name: String
 }
 
-struct Address: Decodable {
+struct Address: Codable {
     let line1: String?
     let line2: String?
     let line3: String?
