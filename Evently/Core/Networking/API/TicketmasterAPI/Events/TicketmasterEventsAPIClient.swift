@@ -4,6 +4,12 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
     var endpoint: APIEndpoint = TicketmasterAPIEndpoint.events
     var apiKeyProvider: APIKeyProviding = TicketmasterAPIKeyProvider()
     
+    private let decoder: JSONDecoder = JSONDecoder()
+    
+    init() {
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+    }
+    
     func fetchEvents(
         country: String,
         page: String,
@@ -11,11 +17,11 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
         with sortingStrategy: String
     ) async throws -> [Event] {
         guard var urlComponents = URLComponents(string: endpoint.path) else {
-            throw APIError.invalidURL
+            throw APIError.invalidURL.rawValue
         }
         
         guard let apiKey = apiKeyProvider.provideAPIKey() else {
-            throw APIError.missingAPIKey
+            throw APIError.missingAPIKey.rawValue
         }
         
         urlComponents.queryItems = [
@@ -32,23 +38,21 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
         ]
         
         guard let url = urlComponents.url else {
-            throw APIError.invalidURL
+            throw APIError.invalidURL.rawValue
         }
         
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.invalidResponse
+            throw APIError.invalidResponse.rawValue
         }
         
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(EventResponse.self, from: data)
             return result.embedded.events
         } catch {
-            throw APIError.decodingError
+            throw APIError.decodingError.rawValue
         }
     }
 }

@@ -6,18 +6,22 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
     
     var eventId: String
     
+    private let decoder: JSONDecoder = JSONDecoder()
+    
     init(eventId: String) {
         self.eventId = eventId
         self.endpoint = TicketmasterAPIEndpoint.eventDetails(eventId: eventId)
+        
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
     
     func fetchEventDetails() async throws -> EventDetails {
         guard var urlComponents = URLComponents(string: endpoint.path) else {
-            throw APIError.invalidURL
+            throw APIError.invalidURL.rawValue
         }
         
         guard let apiKey = apiKeyProvider.provideAPIKey() else {
-            throw APIError.missingAPIKey
+            throw APIError.missingAPIKey.rawValue
         }
         
         urlComponents.queryItems = [
@@ -26,14 +30,14 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
         ]
         
         guard let url = urlComponents.url else {
-            throw APIError.invalidURL
+            throw APIError.invalidURL.rawValue
         }
         
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.invalidResponse
+            throw APIError.invalidResponse.rawValue
         }
         
         do {
@@ -42,8 +46,7 @@ class TicketmasterEventDetailsAPIClient: APIClientProtocol, TicketmasterEventDet
             let result = try decoder.decode(EventDetails.self, from: data)
             return result
         } catch {
-            print(error)
-            throw APIError.decodingError
+            throw APIError.decodingError.rawValue
         }
     }
 }
