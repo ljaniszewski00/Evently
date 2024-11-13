@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = EventsListViewModel()
+    @StateObject private var viewModel = EventsListViewModel(
+        apiClient: TicketmasterEventsAPIClient()
+    )
     
     var body: some View {
         NavigationStack {

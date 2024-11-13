@@ -4,7 +4,10 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
     var endpoint: APIEndpoint = TicketmasterAPIEndpoint.events
     var apiKeyProvider: APIKeyProviding = TicketmasterAPIKeyProvider()
     
-    func fetchEvents(page: Int) async throws -> [Event] {
+    func fetchEvents(
+        page: Int,
+        with sortingStrategy: EventsSortingStrategy
+    ) async throws -> [Event] {
         guard var urlComponents = URLComponents(string: endpoint.path) else {
             throw APIError.invalidURL
         }
@@ -14,10 +17,16 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "apikey", value: apiKey),
-            URLQueryItem(name: "countryCode", value: "PL"),
-            URLQueryItem(name: "page", value: String(page)),
-            URLQueryItem(name: "size", value: "20")
+            URLQueryItem(name: TicketmasterURLComponents.apiKey.rawValue,
+                         value: apiKey),
+            URLQueryItem(name: TicketmasterURLComponents.countryCode.rawValue,
+                         value: "PL"),
+            URLQueryItem(name: TicketmasterURLComponents.page.rawValue,
+                         value: String(page)),
+            URLQueryItem(name: TicketmasterURLComponents.size.rawValue,
+                         value: "20"),
+            URLQueryItem(name: TicketmasterURLComponents.sort.rawValue,
+                         value: sortingStrategy.rawValue)
         ]
         
         guard let url = urlComponents.url else {
@@ -43,5 +52,8 @@ class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClien
 }
 
 protocol TicketmasterEventsAPIClientProtocol {
-    func fetchEvents(page: Int) async throws -> [Event]
+    func fetchEvents(
+        page: Int,
+        with sortingStrategy: EventsSortingStrategy
+    ) async throws -> [Event]
 }
