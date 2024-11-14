@@ -24,6 +24,12 @@ extension EventDetails: Equatable, Identifiable, Hashable {
 }
 
 extension EventDetails {
+    func toObject() -> EventDetailsObject {
+        EventDetailsObject(eventDetails: self)
+    }
+}
+
+extension EventDetails {
     static let sampleEventDetails: EventDetails = EventDetails(
         id: "G5diZfkn0B-bh",
         name: "Radiohead",

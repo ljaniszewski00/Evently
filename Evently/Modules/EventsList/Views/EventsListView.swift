@@ -6,7 +6,9 @@ struct EventsListView: View {
     var body: some View {
         List {
             ForEach(viewModel.events) { event in
-                NavigationLink(destination: EventDetailsView(eventId: event.id)) {
+                NavigationLink(destination: EventDetailsView(
+                    eventId: event.id
+                )) {
                     EventRowView(event: event)
                 }
             }
