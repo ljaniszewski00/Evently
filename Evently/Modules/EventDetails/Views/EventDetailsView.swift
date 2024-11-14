@@ -13,7 +13,7 @@ struct EventDetailsView: View {
     }
     
     var body: some View {
-        ScrollView {
+        List {
             if let event = viewModel.event {
                 VStack(alignment: .leading, spacing: 16) {
                     // Galeria zdjęć
@@ -59,8 +59,14 @@ struct EventDetailsView: View {
                     }
                     .padding()
                 }
+                .listRowBackground(EmptyView())
+                .listRowSeparator(.hidden)
             }
         }
+        .refreshable {
+            await viewModel.loadEventDetailsFromAPI()
+        }
+        .listStyle(.plain)
         .navigationBarTitleDisplayMode(.inline)
         .alert("Błąd", isPresented: $viewModel.showError) {
             Button("OK", role: .cancel) {}

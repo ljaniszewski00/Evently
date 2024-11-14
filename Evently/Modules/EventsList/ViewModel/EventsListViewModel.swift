@@ -7,6 +7,8 @@ final class EventsListViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String?
     
+    @Published var displayMode: EventsListDisplayMode = .list
+    
     @Published private var eventsSortingStrategy: EventsSortingStrategy = .dateAscending
     
     private var currentPage = 0
@@ -48,6 +50,14 @@ final class EventsListViewModel: ObservableObject {
     func chooseEventsSortingStrategy(_ newSortingStrategy: EventsSortingStrategy) async {
         eventsSortingStrategy = newSortingStrategy
         await loadFirstEvents()
+    }
+    
+    func toggleDisplayMode() {
+        if displayMode == .grid {
+            displayMode = .list
+        } else {
+            displayMode = .grid
+        }
     }
     
     private func loadEvents(forPage: Int? = nil) async {

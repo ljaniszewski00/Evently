@@ -48,8 +48,6 @@ final class EventDetailsViewModel: ObservableObject {
     }
     
     private func saveEventDetailsToCache(eventDetails: EventDetails) {
-        let eventObject = eventDetails.toObject()
-        
         cacheManager.addObjectToCache(
             eventDetails.toObject(),
             for: eventDetails.id

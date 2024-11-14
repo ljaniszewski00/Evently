@@ -17,7 +17,7 @@ struct ContentView: View {
     ContentView()
 }
 
-extension Views {
+private extension Views {
     struct Constants {
         static let navigationTitle: String = "Events"
     }
