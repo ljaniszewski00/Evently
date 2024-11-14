@@ -13,7 +13,7 @@ final class EventsListViewModel: ObservableObject {
     private let apiClient: TicketmasterEventsAPIClientProtocol
     
     private let countryForEvents: String = CountryCode.pl.rawValue
-    private let numberOfElementsLoaded: String = "20"
+    private let numberOfEventsLoaded: String = "20"
     
     init(apiClient: TicketmasterEventsAPIClientProtocol) {
         self.apiClient = apiClient
@@ -57,7 +57,7 @@ final class EventsListViewModel: ObservableObject {
             let fetchedEvents = try await apiClient.fetchEvents(
                 country: countryForEvents,
                 page: String(forPage ?? currentPage),
-                size: numberOfElementsLoaded,
+                size: numberOfEventsLoaded,
                 with: eventsSortingStrategy.rawValue
             )
             

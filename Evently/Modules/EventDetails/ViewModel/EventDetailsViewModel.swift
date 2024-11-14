@@ -9,15 +9,16 @@ final class EventDetailsViewModel: ObservableObject {
     
     private let apiClient: TicketmasterEventDetailsAPIClientProtocol
     
-    init(apiClient: TicketmasterEventDetailsAPIClientProtocol) {
-        self.apiClient = apiClient
-    }
-    
-    init(eventId: String, apiClient: TicketmasterEventDetailsAPIClientProtocol) {
+    init(eventId: String,
+         apiClient: TicketmasterEventDetailsAPIClientProtocol) {
         self.apiClient = TicketmasterEventDetailsAPIClient(eventId: eventId)
+        
+        Task {
+            await loadEventDetailsFromAPI()
+        }
     }
     
-    func loadEventDetails() async {
+    func loadEventDetailsFromAPI() async {
         isLoading = true
         
         do {

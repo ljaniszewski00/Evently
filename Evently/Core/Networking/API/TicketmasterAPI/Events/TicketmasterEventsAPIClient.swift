@@ -1,7 +1,7 @@
 import Foundation
 
-class TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClientProtocol {
-    var endpoint: APIEndpoint = TicketmasterAPIEndpoint.events
+actor TicketmasterEventsAPIClient: APIClientProtocol, TicketmasterEventsAPIClientProtocol {
+    nonisolated let endpoint: APIEndpoint = TicketmasterAPIEndpoint.events
     var apiKeyProvider: APIKeyProviding = TicketmasterAPIKeyProvider()
     
     private let decoder: JSONDecoder = JSONDecoder()
