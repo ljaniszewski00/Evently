@@ -31,48 +31,47 @@ struct EventsListView: View {
             .refreshable {
                 await viewModel.loadFirstEvents()
             }
-            .alert("Błąd", isPresented: $viewModel.showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(viewModel.errorMessage ?? "Wystąpił nieznany błąd")
+        }
+        .alert("Błąd", isPresented: $viewModel.showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "Wystąpił nieznany błąd")
+        }
+        .navigationTitle("")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                VStack(alignment: .leading) {
+                    Text("All events in")
+                        .font(.footnote)
+                    Text("Poland")
+                        .font(.title.weight(.bold))
+                }
             }
-            .navigationTitle("")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    VStack(alignment: .leading) {
-                        Text("All events in")
-                            .font(.footnote)
-                        Text("Poland")
-                            .font(.title.weight(.bold))
-                    }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.showEventsSortingSheet = true
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .toolbarImageModifier(colorScheme: colorScheme)
+                        
                 }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                let imageName: String = viewModel.displayMode == .grid ?
+                EventsListDisplayMode.list.displayModeIconName : EventsListDisplayMode.grid.displayModeIconName
                 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.showEventsSortingSheet = true
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .toolbarImageModifier(colorScheme: colorScheme)
-                            
-                    }
-                }
-                
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    let imageName: String = viewModel.displayMode == .grid ?
-                    EventsListDisplayMode.list.displayModeIconName : EventsListDisplayMode.grid.displayModeIconName
-                    
-                    Button {
-                        viewModel.toggleDisplayMode()
-                    } label: {
-                        Image(systemName: imageName)
-                            .toolbarImageModifier(colorScheme: colorScheme)
-                    }
+                Button {
+                    viewModel.toggleDisplayMode()
+                } label: {
+                    Image(systemName: imageName)
+                        .toolbarImageModifier(colorScheme: colorScheme)
                 }
             }
         }
         .sheet(isPresented: $viewModel.showEventsSortingSheet) {
-            EventsSortingSheetView()
+            EventsSortingSheetView(eventsListViewModel: viewModel)
                 .presentationDetents([.medium])
         }
     }

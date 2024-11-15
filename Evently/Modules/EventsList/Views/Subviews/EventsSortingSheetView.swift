@@ -1,20 +1,44 @@
 import SwiftUI
 
 struct EventsSortingSheetView: View {
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Environment(\.dismiss) var dismiss: DismissAction
+    
+    @ObservedObject var eventsListViewModel: EventsListViewModel
+    
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 15) {
-                    ForEach(EventsSortingValue.allCases) { sortingValue in
-                        Text("by \(sortingValue.rawValue)")
+                    ForEach(EventsSortingKey.allCases) { sortingKey in
+                        Text(sortingKey.rawValue)
                             .font(.title2.weight(.bold))
                         VStack(alignment: .leading, spacing: 10) {
-                            ForEach(sortingValue.availableSortingTypes) { sortingType in
-                                HStack {
-                                    Text(sortingType.rawValue.lowercased())
-                                        .fontWeight(.medium)
-                                    Spacer()
+                            ForEach(sortingKey.availableSortingValues) { sortingValue in
+                                Button {
+                                    Task {
+                                        await eventsListViewModel.chooseEventsSortingStrategy(
+                                            sortingKey: sortingKey,
+                                            sortingValue: sortingValue
+                                        )
+                                    }
+                                    dismiss()
+                                } label: {
+                                    let availableSortingStrategy: EventsSortingStrategy = (sortingKey, sortingValue)
+                                    
+                                    HStack {
+                                        Circle()
+                                            .if(!eventsListViewModel.checkSortingStrategyIsChoosen(availableSortingStrategy)) {
+                                                $0.stroke(lineWidth: 1)
+                                            }
+                                            .frame(width: 15, height: 15)
+                                        
+                                        Text(sortingValue.rawValue.lowercased())
+                                            .fontWeight(.medium)
+                                        Spacer()
+                                    }
                                 }
+                                .tint(colorScheme == .dark ? .white : .black)
                             }
                         }
                         
@@ -23,12 +47,16 @@ struct EventsSortingSheetView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Sort Events")
+            .navigationTitle("Sort Events By")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
 #Preview {
-    EventsSortingSheetView()
+    EventsSortingSheetView(
+        eventsListViewModel: EventsListViewModel(
+            apiClient: TicketmasterEventsAPIClient()
+        )
+    )
 }

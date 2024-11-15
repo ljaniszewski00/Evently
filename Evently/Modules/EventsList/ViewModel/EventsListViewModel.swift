@@ -10,7 +10,7 @@ final class EventsListViewModel: ObservableObject {
     @Published var displayMode: EventsListDisplayMode = .list
     
     @Published var showEventsSortingSheet: Bool = false
-    @Published private var eventsSortingStrategy: EventsSortingStrategy = .dateAscending
+    @Published private var eventsSortingStrategy: EventsSortingStrategy = (.date, .ascending)
     
     private var currentPage = 0
     private let apiClient: TicketmasterEventsAPIClientProtocol
@@ -49,10 +49,10 @@ final class EventsListViewModel: ObservableObject {
     }
     
     func chooseEventsSortingStrategy(
-        sortingValue: EventsSortingValue,
-        sortingType: EventsSortingType
+        sortingKey: EventsSortingKey,
+        sortingValue: EventsSortingValue
     ) async {
-//        eventsSortingStrategy = newSortingStrategy
+        eventsSortingStrategy = (sortingKey, sortingValue)
         await loadFirstEvents()
     }
     
@@ -67,12 +67,14 @@ final class EventsListViewModel: ObservableObject {
     private func loadEvents(forPage: Int? = nil) async {
         isLoading = true
         
+        let sortingStrategy: String = "\(eventsSortingStrategy.eventsSortingKey.apiCodingName),\(eventsSortingStrategy.eventsSortingValue.apiCodingName)"
+        
         do {
             let fetchedEvents = try await apiClient.fetchEvents(
                 country: countryForEvents,
                 page: String(forPage ?? currentPage),
                 size: numberOfEventsLoaded,
-                with: eventsSortingStrategy.apiCodingName
+                with: sortingStrategy
             )
             
             events.append(contentsOf: fetchedEvents)
