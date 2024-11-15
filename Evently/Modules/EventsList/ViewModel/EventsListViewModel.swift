@@ -7,7 +7,7 @@ final class EventsListViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String?
     
-    @Published var displayMode: EventsListDisplayMode = .list
+    @Published var displayMode: EventsListDisplayMode = .grid
     
     @Published private var eventsSortingStrategy: EventsSortingStrategy = .dateAscending
     
