@@ -27,6 +27,7 @@ struct EventsListView: View {
                     .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
+            .scrollIndicators(.hidden)
             .refreshable {
                 await viewModel.loadFirstEvents()
             }
@@ -47,27 +48,15 @@ struct EventsListView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Image(systemName: "arrow.up.arrow.down")
-                        .toolbarImageModifier(colorScheme: colorScheme)
-                        .contextMenu {
-                            ForEach(EventsSortingStrategy.allCases, id: \.self) { sortingStrategy in
-                                Button {
-                                    Task {
-                                        await viewModel.chooseEventsSortingStrategy(sortingStrategy)
-                                    }
-                                } label: {
-                                    HStack {
-                                        Text(sortingStrategy.name)
-                                            .padding(.trailing)
-                                        
-                                        if viewModel.checkSortingStrategyIsChoosen(sortingStrategy) {
-                                            Image(systemName: "checkmark")
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    Button {
+                        viewModel.showEventsSortingSheet = true
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .toolbarImageModifier(colorScheme: colorScheme)
+                            
+                    }
                 }
+                
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     let imageName: String = viewModel.displayMode == .grid ?
@@ -81,6 +70,10 @@ struct EventsListView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $viewModel.showEventsSortingSheet) {
+            EventsSortingSheetView()
+                .presentationDetents([.medium])
         }
     }
 }
@@ -168,6 +161,7 @@ private extension Views {
                                 }
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
+                                .padding(.leading, 2.5)
                             }
                         }
                     }
@@ -225,6 +219,7 @@ private extension Views {
                 }
             }
             .padding(.top)
+            .padding(.horizontal, 5)
             .listRowInsets(.init(
                 top: Views.Constants.gridListRowInsetValue,
                 leading: Views.Constants.gridListRowInsetValue,
@@ -259,7 +254,6 @@ private extension Views {
                     Text(event.name)
                         .font(.subheadline)
                         .fontWeight(.bold)
-                        .lineLimit(2)
 
                     VStack(alignment: .leading, spacing: 5) {
                         if let date = event.dateString {
@@ -285,6 +279,7 @@ private extension Views {
                             }
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                            .padding(.leading, 1.5)
                         }
                     }
                 }
@@ -297,6 +292,7 @@ private extension Views {
             }
             .mask(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .padding(3)
+            .shadow(radius: 8)
         }
     }
 }
@@ -312,6 +308,7 @@ private extension Image {
                 RoundedRectangle(cornerRadius: 10)
                     .foregroundStyle(.ultraThinMaterial)
             }
+            .frame(width: 20)
     }
     
     func listEventImageModifier() -> some View {

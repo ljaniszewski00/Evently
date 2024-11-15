@@ -1,39 +1,39 @@
-enum EventsSortingStrategy: String, CaseIterable {
-    case nameAscending = "name,asc"
-    case nameDescending = "name,desc"
-    case dateAscending = "date,asc"
-    case dateDescending = "date,desc"
-    case relevanceAscending = "relevance,asc"
-    case relevanceDescending = "relevance,desc"
-    case distanceAscending = "distance,asc"
-    case saleStartDateAscending = "onSaleStartDate,asc"
-    case venueNameAscending = "venueName,asc"
-    case venueNameDescending = "venueName,desc"
+enum EventsSortingStrategy {
+    case nameAscending
+    case nameDescending
+    case dateAscending
+    case dateDescending
+    case relevanceAscending
+    case relevanceDescending
+    case distanceAscending
+    case saleStartDateAscending
+    case venueNameAscending
+    case venueNameDescending
 }
 
 extension EventsSortingStrategy {
-    var name: String {
+    var apiCodingName: String {
         switch self {
         case .nameAscending:
-            return "Name Ascending"
+            "\(EventsSortingValue.name.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .nameDescending:
-            return "Name Descending"
+            "\(EventsSortingValue.name.apiCodingName),\(EventsSortingType.descending.apiCodingName)"
         case .dateAscending:
-            return "Date Ascending"
+            "\(EventsSortingValue.date.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .dateDescending:
-            return "Date Descending"
+            "\(EventsSortingValue.date.apiCodingName),\(EventsSortingType.descending.apiCodingName)"
         case .relevanceAscending:
-            return "Relevance Ascending"
+            "\(EventsSortingValue.relevance.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .relevanceDescending:
-            return "Relevance Descending"
+            "\(EventsSortingValue.relevance.apiCodingName),\(EventsSortingType.descending.apiCodingName)"
         case .distanceAscending:
-            return "Distance Ascending"
+            "\(EventsSortingValue.distance.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .saleStartDateAscending:
-            return "Sale Start Date Ascending"
+            "\(EventsSortingValue.saleStartDate.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .venueNameAscending:
-            return "Venue Name Ascending"
+            "\(EventsSortingValue.venueName.apiCodingName),\(EventsSortingType.ascending.apiCodingName)"
         case .venueNameDescending:
-            return "Venue Name Descending"
+            "\(EventsSortingValue.venueName.apiCodingName),\(EventsSortingType.descending.apiCodingName)"
         }
     }
 }

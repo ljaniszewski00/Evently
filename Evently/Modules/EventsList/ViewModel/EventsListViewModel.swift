@@ -7,8 +7,9 @@ final class EventsListViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String?
     
-    @Published var displayMode: EventsListDisplayMode = .grid
+    @Published var displayMode: EventsListDisplayMode = .list
     
+    @Published var showEventsSortingSheet: Bool = false
     @Published private var eventsSortingStrategy: EventsSortingStrategy = .dateAscending
     
     private var currentPage = 0
@@ -47,8 +48,11 @@ final class EventsListViewModel: ObservableObject {
         sortingStrategy == eventsSortingStrategy
     }
     
-    func chooseEventsSortingStrategy(_ newSortingStrategy: EventsSortingStrategy) async {
-        eventsSortingStrategy = newSortingStrategy
+    func chooseEventsSortingStrategy(
+        sortingValue: EventsSortingValue,
+        sortingType: EventsSortingType
+    ) async {
+//        eventsSortingStrategy = newSortingStrategy
         await loadFirstEvents()
     }
     
@@ -68,7 +72,7 @@ final class EventsListViewModel: ObservableObject {
                 country: countryForEvents,
                 page: String(forPage ?? currentPage),
                 size: numberOfEventsLoaded,
-                with: eventsSortingStrategy.rawValue
+                with: eventsSortingStrategy.apiCodingName
             )
             
             events.append(contentsOf: fetchedEvents)
