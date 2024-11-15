@@ -137,14 +137,10 @@ private extension Views {
                 ZStack(alignment: .bottom) {
                     AsyncImage(url: URL(string: event.images.first?.url ?? "")) { image in
                         image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .listEventImageModifier()
                     } placeholder: {
                         Image(.eventImageNotAvailable)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .listEventImageModifier()
                     }
                     
                     VStack(alignment: .leading, spacing: 10) {
@@ -247,17 +243,17 @@ private extension Views {
         
         var body: some View {
             VStack(spacing: 0) {
-                AsyncImage(url: URL(string: event.images.first?.url ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(Rectangle())
-                } placeholder: {
-                    Image(.eventImageNotAvailable)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(Rectangle())
+                GeometryReader { geometry in
+                    AsyncImage(url: URL(string: event.images.first?.url ?? "")) { image in
+                        image
+                            .gridEventImageModifier(frameHeight: geometry.size.width)
+                    } placeholder: {
+                        Image(.eventImageNotAvailable)
+                            .gridEventImageModifier(frameHeight: geometry.size.width)
+                    }
                 }
+                .clipped()
+                .aspectRatio(1, contentMode: .fit)
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Text(event.name)
@@ -320,15 +316,16 @@ private extension Image {
     
     func listEventImageModifier() -> some View {
         self.resizable()
-            .frame(width: Views.Constants.eventListCellImageSize,
-                   height: Views.Constants.eventListCellImageSize)
-            .clipShape(RoundedRectangle(cornerRadius: Views.Constants.eventListCellImageRadius))
+            .scaledToFill()
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fill)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
     
-    func gridEventImageModifier() -> some View {
+    func gridEventImageModifier(frameHeight: CGFloat) -> some View {
         self.resizable()
-            .frame(width: Views.Constants.eventGridCellImageSize,
-                   height: Views.Constants.eventGridCellImageSize)
-            .clipShape(Circle())
+            .scaledToFill()
+            .frame(height: frameHeight, alignment: .center)
     }
 }
