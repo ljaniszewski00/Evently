@@ -13,7 +13,7 @@ final class EventDetailsViewModel: ObservableObject {
     
     var eventImagesURLs: [String] {
         guard let event = event else {
-            return []
+            return [""]
         }
         
         return event.images.map {

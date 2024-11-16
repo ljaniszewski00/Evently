@@ -9,11 +9,13 @@ struct EventsSortingSheetView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 15) {
+                VStack(alignment: .leading,
+                       spacing: Views.Constants.mainVStackSpacing) {
                     ForEach(EventsSortingKey.allCases) { sortingKey in
                         Text(sortingKey.rawValue)
                             .font(.title2.weight(.bold))
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading,
+                               spacing: Views.Constants.innerVStackSpacing) {
                             ForEach(sortingKey.availableSortingValues) { sortingValue in
                                 Button {
                                     Task {
@@ -30,9 +32,12 @@ struct EventsSortingSheetView: View {
                                     HStack {
                                         Circle()
                                             .if(!eventsListViewModel.checkSortingStrategyIsChoosen(availableSortingStrategy)) {
-                                                $0.stroke(lineWidth: 1)
+                                                $0.stroke(
+                                                    lineWidth: Views.Constants.notSelectedSortingValueCircleStrokeLineWidth
+                                                )
                                             }
-                                            .frame(width: 15, height: 15)
+                                            .frame(width: Views.Constants.sortingValueCircleSize,
+                                                   height: Views.Constants.sortingValueCircleSize)
                                         
                                         Text(sortingValue.rawValue.lowercased())
                                             .fontWeight(.medium)
@@ -48,7 +53,7 @@ struct EventsSortingSheetView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Sort Events By")
+            .navigationTitle(Views.Constants.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -60,4 +65,14 @@ struct EventsSortingSheetView: View {
             apiClient: TicketmasterEventsAPIClient()
         )
     )
+}
+
+private extension Views {
+    struct Constants {
+        static let mainVStackSpacing: CGFloat = 15
+        static let innerVStackSpacing: CGFloat = 10
+        static let notSelectedSortingValueCircleStrokeLineWidth: CGFloat = 1
+        static let sortingValueCircleSize: CGFloat = 15
+        static let navigationTitle: String = "Sort Events By"
+    }
 }

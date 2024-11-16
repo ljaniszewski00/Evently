@@ -163,3 +163,11 @@ private extension Views {
         static let cellShadowRadius: CGFloat = 8
     }
 }
+
+private extension Image {
+    func gridEventImageModifier(frameHeight: CGFloat) -> some View {
+        self.resizable()
+            .scaledToFill()
+            .frame(height: frameHeight, alignment: .center)
+    }
+}

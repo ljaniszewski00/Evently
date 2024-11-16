@@ -34,14 +34,14 @@ struct EventsListView: View {
                 }
             }
         }
-        .navigationTitle("")
+        .navigationTitle(Views.Constants.navigationTitle)
         .toolbar(viewModel.showError ? .hidden : .visible)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 VStack(alignment: .leading) {
-                    Text("All events in")
+                    Text(Views.Constants.toolbarTitleFirstLine)
                         .font(.footnote)
-                    Text("Poland")
+                    Text(viewModel.selectedCountry.name)
                         .font(.title.weight(.bold))
                 }
             }
@@ -50,7 +50,7 @@ struct EventsListView: View {
                 Button {
                     viewModel.showEventsSortingSheet = true
                 } label: {
-                    Image(systemName: "arrow.up.arrow.down")
+                    Image(systemName: Views.Constants.toolbarSortingButtonImage)
                         .toolbarImageModifier(colorScheme: colorScheme)
                         
                 }
@@ -87,6 +87,31 @@ struct EventsListView: View {
 
 private extension Views {
     struct Constants {
+        static let navigationTitle: String = ""
+        static let toolbarTitleFirstLine: String = "All events in"
+        static let toolbarSortingButtonImage: String = "arrow.up.arrow.down"
         
+        static let toolbarImageFrameSize: CGFloat = 17
+        static let toolbarImageInnerPadding: CGFloat = 8
+        static let toolbarImageBackgroundCornerRadius: CGFloat = 10
+        static let toolbarImageFrameSizeWithBackground: CGFloat = 20
+    }
+}
+
+private extension Image {
+    func toolbarImageModifier(colorScheme: ColorScheme) -> some View {
+        self.resizable()
+            .scaledToFit()
+            .frame(width: Views.Constants.toolbarImageFrameSize,
+                   height: Views.Constants.toolbarImageFrameSize)
+            .foregroundStyle(colorScheme == .dark ? .white : .black)
+            .padding(Views.Constants.toolbarImageInnerPadding)
+            .background {
+                RoundedRectangle(
+                    cornerRadius: Views.Constants.toolbarImageBackgroundCornerRadius
+                )
+                    .foregroundStyle(.ultraThinMaterial)
+            }
+            .frame(width: Views.Constants.toolbarImageFrameSizeWithBackground)
     }
 }

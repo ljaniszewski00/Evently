@@ -9,15 +9,14 @@ extension View {
 struct ErrorModal: ViewModifier {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     
-    @Binding var isPresented: Bool
-    
     @State private var stopModalDisappear: Bool = false
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var secondsElapsed: Int = 0
     
-    var errorDescription: String?
-    
     private let secondsToElapseToModalDisappear: Int = 4
+    
+    @Binding var isPresented: Bool
+    var errorDescription: String?
 
     init(isPresented: Binding<Bool>, errorDescription: String?) {
         _isPresented = isPresented

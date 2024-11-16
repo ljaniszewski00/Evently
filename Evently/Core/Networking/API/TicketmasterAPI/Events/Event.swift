@@ -3,9 +3,9 @@ import Foundation
 struct Event: Codable {
     let id: String
     let name: String
-    let dates: Dates
-    let place: Place?
-    let embedded: Embedded
+    let dates: EventDates
+    let place: EventPlace?
+    let embedded: EventEmbedded
     let images: [EventImage]
     
     enum CodingKeys: String, CodingKey {
@@ -44,32 +44,32 @@ extension Event {
     static let sampleEvent: Event = Event(
         id: "G5diZfkn0B-bh",
         name: "Radiohead",
-        dates: Dates(
-            startDate: StartDate(
+        dates: EventDates(
+            startDate: EventStartDate(
                 localDate: "2016-07-27",
                 localTime: "19:30:00",
                 dateTime: "2016-07-27T23:30:00Z"
             )
         ),
-        place: Place(
+        place: EventPlace(
             name: "Madison Square Garden",
-            address: Address(
+            address: EventAddress(
                 line1: "7th Ave & 32nd Street",
                 line2: nil,
                 line3: nil),
-            city: City(name: "New York"),
-            country: Country(name: "United States of America")
+            city: EventCity(name: "New York"),
+            country: EventCountry(name: "United States of America")
         ),
-        embedded: Embedded(
+        embedded: EventEmbedded(
             venues: [
-                Place(
+                EventPlace(
                     name: "Madison Square Garden",
-                    address: Address(
+                    address: EventAddress(
                         line1: "7th Ave & 32nd Street",
                         line2: nil,
                         line3: nil),
-                    city: City(name: "New York"),
-                    country: Country(name: "United States of America")
+                    city: EventCity(name: "New York"),
+                    country: EventCountry(name: "United States of America")
                 )
             ]
         ),

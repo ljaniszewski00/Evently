@@ -117,5 +117,26 @@ private extension Views {
         static let vStackPadding: CGFloat = 8
         static let vStackBackgroundCornerRadius: CGFloat = 8
         static let navigationLinkOpacity: CGFloat = 0.0
+        
+        static let listEventFrameMinWidth: CGFloat = 0
+        static let listEventAspectRatio: CGFloat = 1
+        static let listEventClipShapeCornerRadius: CGFloat = 10
+    }
+}
+
+private extension Image {
+    func listEventImageModifier() -> some View {
+        self.resizable()
+            .scaledToFill()
+            .frame(minWidth: Views.Constants.listEventFrameMinWidth,
+                   maxWidth: .infinity)
+            .aspectRatio(Views.Constants.listEventAspectRatio, contentMode: .fill)
+            .clipped()
+            .clipShape(
+                RoundedRectangle(
+                    cornerRadius: Views.Constants.listEventClipShapeCornerRadius,
+                    style: .continuous
+                )
+            )
     }
 }

@@ -3,13 +3,13 @@ import Foundation
 struct EventDetails: Codable {
     let id: String
     let name: String
-    let dates: Dates
-    let place: Place?
-    let classifications: [Classifications]
-    let priceRanges: [PriceRange]?
-    let embedded: Embedded
+    let dates: EventDates
+    let place: EventPlace?
+    let classifications: [EventClassifications]
+    let priceRanges: [EventPriceRange]?
+    let embedded: EventEmbedded
     let images: [EventImage]
-    let seatMap: SeatMap?
+    let seatMap: EventSeatMap?
     
     enum CodingKeys: String, CodingKey {
         case id, name, dates, place, classifications, priceRanges, images
@@ -66,44 +66,44 @@ extension EventDetails {
     static let sampleEventDetails: EventDetails = EventDetails(
         id: "G5diZfkn0B-bh",
         name: "Radiohead",
-        dates: Dates(
-            startDate: StartDate(
+        dates: EventDates(
+            startDate: EventStartDate(
                 localDate: "2016-07-27",
                 localTime: "19:30:00",
                 dateTime: "2016-07-27T23:30:00Z"
             )
         ),
-        place: Place(
+        place: EventPlace(
             name: "Madison Square Garden",
-            address: Address(
+            address: EventAddress(
                 line1: "7th Ave & 32nd Street",
                 line2: nil,
                 line3: nil),
-            city: City(name: "New York"),
-            country: Country(name: "United States of America")
+            city: EventCity(name: "New York"),
+            country: EventCountry(name: "United States of America")
         ),
         classifications: [
-            Classifications(
-                segment: Segment(name: "Music"),
-                genre: Genre(name: "Rock"),
-                subgenre: Subgenre(name: "Alternative Rock"))
+            EventClassifications(
+                segment: EventSegment(name: "Music"),
+                genre: EventGenre(name: "Rock"),
+                subgenre: EventSubgenre(name: "Alternative Rock"))
         ],
         priceRanges: [
-            PriceRange(
+            EventPriceRange(
                 min: 80,
                 max: 80,
                 currency: "USD")
         ],
-        embedded: Embedded(
+        embedded: EventEmbedded(
             venues: [
-                Place(
+                EventPlace(
                     name: "Madison Square Garden",
-                    address: Address(
+                    address: EventAddress(
                         line1: "7th Ave & 32nd Street",
                         line2: nil,
                         line3: nil),
-                    city: City(name: "New York"),
-                    country: Country(name: "United States of America")
+                    city: EventCity(name: "New York"),
+                    country: EventCountry(name: "United States of America")
                 )
             ]
         ),
