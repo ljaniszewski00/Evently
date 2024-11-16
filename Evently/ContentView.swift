@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+    
     @StateObject private var viewModel = EventsListViewModel(
         apiClient: TicketmasterEventsAPIClient()
     )
@@ -10,6 +12,7 @@ struct ContentView: View {
             EventsListView(viewModel: viewModel)
                 .navigationTitle(Views.Constants.navigationTitle)
         }
+        .accentColor(colorScheme == .dark ? .white : .black)
     }
 }
 

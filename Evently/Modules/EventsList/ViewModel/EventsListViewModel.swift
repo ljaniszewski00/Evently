@@ -52,7 +52,13 @@ final class EventsListViewModel: ObservableObject {
         sortingKey: EventsSortingKey,
         sortingValue: EventsSortingValue
     ) async {
-        eventsSortingStrategy = (sortingKey, sortingValue)
+        let newSortingStrategy = (sortingKey, sortingValue)
+        
+        guard newSortingStrategy != eventsSortingStrategy else {
+            return
+        }
+        
+        eventsSortingStrategy = newSortingStrategy
         await loadFirstEvents()
     }
     

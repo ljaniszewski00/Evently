@@ -12,8 +12,9 @@ struct EventDetails: Codable {
     let seatMap: SeatMap?
     
     enum CodingKeys: String, CodingKey {
-        case id, name, dates, place, classifications, priceRanges, images, seatMap
+        case id, name, dates, place, classifications, priceRanges, images
         case embedded = "_embedded"
+        case seatMap = "seatmap"
     }
 }
 

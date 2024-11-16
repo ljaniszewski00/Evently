@@ -38,20 +38,6 @@ extension Event {
         
         return DateFormatter.displayDateFormatter.string(from: date)
     }
-    
-    var timeString: String? {
-        if let dateFromApi = dates.startDate.dateTime,
-           let date = DateFormatter.apiDateFormatter.date(from: dateFromApi) {
-            return DateFormatter.displayTimeFormatter.string(from: date)
-        }
-        
-        guard let localTimeFromApi = dates.startDate.localTime,
-              let time = DateFormatter.apiLocalTimeFormatter.date(from: localTimeFromApi) else {
-            return nil
-        }
-        
-        return DateFormatter.displayTimeFormatter.string(from: time)
-    }
 }
 
 extension Event {

@@ -21,8 +21,9 @@ struct EventsSortingSheetView: View {
                                             sortingKey: sortingKey,
                                             sortingValue: sortingValue
                                         )
+                                        
+                                        dismiss()
                                     }
-                                    dismiss()
                                 } label: {
                                     let availableSortingStrategy: EventsSortingStrategy = (sortingKey, sortingValue)
                                     

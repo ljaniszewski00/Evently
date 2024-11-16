@@ -21,6 +21,49 @@ final class EventDetailsViewModel: ObservableObject {
         }
     }
     
+    var eventClassificationFormatted: String? {
+        guard let eventClassification = event?.classifications.first else {
+            return nil
+        }
+        
+        return "\(eventClassification.segment.name) • \(eventClassification.genre.name)"
+    }
+    
+    var eventDateTimeFormatted: String? {
+        var eventDateTimeFormatted: String = ""
+        
+        if let eventDate = event?.dateString {
+            eventDateTimeFormatted.append("\(eventDate), ")
+        }
+        
+        if let eventTime = event?.timeString {
+            eventDateTimeFormatted.append(eventTime)
+        }
+        
+        guard !eventDateTimeFormatted.isEmpty else {
+            return nil
+        }
+        
+        return eventDateTimeFormatted
+    }
+    
+    var eventPriceFormatted: String? {
+        guard let prices = event?.priceRanges?.first else {
+            return nil
+        }
+        
+        return "\(String(format: "%.2f", prices.min)) \(prices.currency)"
+    }
+    
+    var eventSeatMapURL: URL? {
+        guard let eventSeatMapURLString = event?.seatMap?.staticUrl,
+              !eventSeatMapURLString.isEmpty else {
+            return nil
+        }
+        
+        return URL(string: eventSeatMapURLString)
+    }
+    
     init(eventId: String,
          apiClient: TicketmasterEventDetailsAPIClientProtocol) {
         self.apiClient = TicketmasterEventDetailsAPIClient(eventId: eventId)

@@ -18,26 +18,142 @@ struct EventDetailsView: View {
         ScrollView {
             VStack {
                 if let eventDetails = viewModel.event {
-                    Views.EventImagesTabView(imagesURLs: viewModel.eventImagesURLs)
+                    if !viewModel.eventImagesURLs.isEmpty {
+                        Views.EventImagesTabView(imagesURLs: viewModel.eventImagesURLs)
+                    }
+                    
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(eventDetails.name)
+                                        .font(.title3.weight(.bold))
+                                    
+                                    if let eventClassification = viewModel.eventClassificationFormatted {
+                                        Text(eventClassification)
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                
+                                Divider()
+                                    .padding(.bottom, 8)
+                                
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "calendar")
+                                            
+                                            if let dateTime = viewModel.eventDateTimeFormatted {
+                                                Text(dateTime)
+                                            } else {
+                                               Text("Date not available")
+                                            }
+                                            
+                                            Spacer()
+                                        }
+                                        
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "mappin")
+
+                                            if let venue = eventDetails.embedded.venues.first {
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(venue.name)
+                                                    if let address = venue.address.line1 {
+                                                        Text(address)
+                                                    }
+                                                    Text("\(venue.city.name), \(venue.country.name)")
+                                                }
+                                                .fixedSize(horizontal: false, vertical: true)
+                                            } else {
+                                                Text("Place not available")
+                                            }
+                                            
+                                            Spacer()
+                                        }
+                                        .padding(.leading, 2)
+                                    }
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                                    
+                                    Group {
+                                        if let minimalPrice = viewModel.eventPriceFormatted {
+                                            VStack(spacing: 3) {
+                                                Text("from")
+                                                    .font(.caption2)
+                                                Text(minimalPrice)
+                                                    .font(.headline.weight(.bold))
+                                            }
+                                        } else {
+                                            Text("Price not available")
+                                                .font(.subheadline.weight(.semibold))
+                                        }
+                                    }
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding()
+                                    .background (
+                                        .thinMaterial,
+                                        in: RoundedRectangle(cornerRadius: 10)
+                                    )
+                                }
+                            }
+                        }
+                        .padding()
+                        .background (
+                            .ultraThinMaterial,
+                            in: RoundedRectangle(cornerRadius: 10)
+                        )
+                        
+                        VStack(alignment: .leading, spacing: 15) {
+                            HStack {
+                                Text("Event Seat Map")
+                                    .font(.headline.weight(.semibold))
+                                
+                                Spacer()
+                            }
+                            
+                            if let seatMapURL = viewModel.eventSeatMapURL {
+                                AsyncImage(url: seatMapURL) { image in
+                                    image
+                                        .eventSeatMapImageModifier()
+                                } placeholder: {
+                                    Image(.eventImageNotAvailable)
+                                        .eventSeatMapImageModifier()
+                                        .loadingOverlay()
+                                }
+                            } else {
+                                HStack {
+                                    Text("Not Available")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background (
+                            .ultraThinMaterial,
+                            in: RoundedRectangle(cornerRadius: 10)
+                        )
+                    }
+                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
         .ignoresSafeArea()
         .refreshable {
-            await viewModel.loadEventDetailsFromAPI()
+            Task {
+                await viewModel.loadEventDetailsFromAPI()
+            }
         }
-        .alert("Błąd", isPresented: $viewModel.showError) {
+        .alert("Error", isPresented: $viewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Wystąpił nieznany błąd")
+            Text(viewModel.errorMessage ?? "Unknow error occured")
         }
-    }
-    
-    private var priceRange: String {
-        guard let prices = viewModel.event?.priceRanges?.first else {
-            return "Cena niedostępna"
-        }
-        return "od \(String(format: "%.2f", prices.min)) \(prices.currency)"
     }
 }
 
@@ -69,21 +185,10 @@ private extension Views {
                             } placeholder: {
                                 Image(.eventImageNotAvailable)
                                     .resizable()
+                                    .loadingOverlay()
                             }
                             .frame(maxWidth: .infinity)
                             .aspectRatio(contentMode: .fill)
-                            .overlay {
-                                LinearGradient(
-                                    colors: [
-                                        .clear,
-                                        .clear,
-                                        .black.opacity(0.5),
-                                        .black
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            }
                         }
                     }
                 }
@@ -94,6 +199,7 @@ private extension Views {
                 }
                 .frame(height: 400)
                 .frame(maxWidth: .infinity)
+                .mask(RoundedRectangle(cornerRadius: 20))
             }
         }
         
@@ -102,5 +208,16 @@ private extension Views {
                 currentImageIndex = (currentImageIndex + 1) % imagesURLs.count
             }
         }
+    }
+}
+
+private extension Image {
+    func eventSeatMapImageModifier() -> some View {
+        self.resizable()
+            .scaledToFill()
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fill)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }

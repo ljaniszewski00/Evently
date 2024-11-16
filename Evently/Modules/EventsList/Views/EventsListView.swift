@@ -29,13 +29,15 @@ struct EventsListView: View {
             .listStyle(.plain)
             .scrollIndicators(.hidden)
             .refreshable {
-                await viewModel.loadFirstEvents()
+                Task {
+                    await viewModel.loadFirstEvents()
+                }
             }
         }
-        .alert("Błąd", isPresented: $viewModel.showError) {
+        .alert("Error", isPresented: $viewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Wystąpił nieznany błąd")
+            Text(viewModel.errorMessage ?? "Unknow error occured")
         }
         .navigationTitle("")
         .toolbar {
@@ -133,6 +135,7 @@ private extension Views {
                     } placeholder: {
                         Image(.eventImageNotAvailable)
                             .listEventImageModifier()
+                            .loadingOverlay()
                     }
                     
                     VStack(alignment: .leading, spacing: 10) {
@@ -142,26 +145,34 @@ private extension Views {
                             .lineLimit(2)
 
                         VStack(alignment: .leading, spacing: 5) {
-                            if let date = event.dateString {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "calendar")
+                            HStack(spacing: 4) {
+                                Image(systemName: "calendar")
+                                
+                                if let date = event.dateString {
                                     Text(date)
-                                    Spacer()
+                                } else {
+                                    Text("Date not available")
                                 }
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                
+                                Spacer()
                             }
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(.secondary)
 
-                            if let venue = event.embedded.venues.first {
-                                HStack(spacing: 6) {
-                                    Image(systemName: "mappin")
+                            HStack(spacing: 6) {
+                                Image(systemName: "mappin")
+                                
+                                if let venue = event.embedded.venues.first {
                                     Text("\(venue.name) • \(venue.city.name), \(venue.country.name)")
-                                    Spacer()
+                                } else {
+                                    Text("Place not available")
                                 }
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .padding(.leading, 2.5)
+                                
+                                Spacer()
                             }
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(.secondary)
+                            .padding(.leading, 2.5)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -244,6 +255,7 @@ private extension Views {
                     } placeholder: {
                         Image(.eventImageNotAvailable)
                             .gridEventImageModifier(frameHeight: geometry.size.width)
+                            .loadingOverlay()
                     }
                 }
                 .clipped()
@@ -261,13 +273,12 @@ private extension Views {
                                 Text(date)
                                 Spacer()
                             }
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
                         }
 
                         if let venue = event.embedded.venues.first {
                             HStack(spacing: 6) {
                                 Image(systemName: "mappin")
+                                
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(venue.name)
                                     Text("\(venue.city.name), \(venue.country.name)")
@@ -276,11 +287,11 @@ private extension Views {
                                     
                                 Spacer()
                             }
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
                             .padding(.leading, 1.5)
                         }
                     }
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(.secondary)
                 }
                 .padding(8)
                 .background(
