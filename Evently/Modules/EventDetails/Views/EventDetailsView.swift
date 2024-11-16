@@ -149,11 +149,9 @@ struct EventDetailsView: View {
                 await viewModel.loadEventDetailsFromAPI()
             }
         }
-        .alert("Error", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Unknow error occured")
-        }
+        .toolbar(viewModel.showError ? .hidden : .visible)
+        .errorModal(isPresented: $viewModel.showError,
+                    errorDescription: viewModel.errorMessage)
     }
 }
 

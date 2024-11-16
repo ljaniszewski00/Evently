@@ -93,7 +93,6 @@ final class EventsListViewModel: ObservableObject {
     
     private func handleError(_ error: Error) {
         errorMessage = error.localizedDescription
-        
         showError = true
     }
 }

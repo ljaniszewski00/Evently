@@ -34,12 +34,8 @@ struct EventsListView: View {
                 }
             }
         }
-        .alert("Error", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Unknow error occured")
-        }
         .navigationTitle("")
+        .toolbar(viewModel.showError ? .hidden : .visible)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 VStack(alignment: .leading) {
@@ -72,6 +68,8 @@ struct EventsListView: View {
                 }
             }
         }
+        .errorModal(isPresented: $viewModel.showError,
+                    errorDescription: viewModel.errorMessage)
         .sheet(isPresented: $viewModel.showEventsSortingSheet) {
             EventsSortingSheetView(eventsListViewModel: viewModel)
                 .presentationDetents([.medium])
