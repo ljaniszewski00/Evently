@@ -111,6 +111,8 @@ extension EventDetails {
             EventImage(url: "http://s1.ticketm.net/dam/a/c4c/e751ab33-b9cd-4d24-ad4a-5ef79faa7c4c_72681_EVENT_DETAIL_PAGE_16_9.jpg"),
             EventImage(url: "http://s1.ticketm.net/dam/a/c4c/e751ab33-b9cd-4d24-ad4a-5ef79faa7c4c_72681_RETINA_LANDSCAPE_16_9.jpg"),
         ],
-        seatMap: nil
+        seatMap: EventSeatMap(
+            staticUrl: "https://maps.ticketmaster.com/maps/geometry/3/event/19005D0B8F9014F6/staticImage?type=png&systemId=HOST"
+        )
     )
 }

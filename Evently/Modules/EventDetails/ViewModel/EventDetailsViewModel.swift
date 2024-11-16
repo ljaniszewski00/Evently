@@ -66,7 +66,7 @@ final class EventDetailsViewModel: ObservableObject {
     
     init(eventId: String,
          apiClient: TicketmasterEventDetailsAPIClientProtocol) {
-        self.apiClient = TicketmasterEventDetailsAPIClient(eventId: eventId)
+        self.apiClient = apiClient
         
         loadEventDetailsFromCache(eventId: eventId)
     }
