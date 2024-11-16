@@ -11,6 +11,16 @@ final class EventDetailsViewModel: ObservableObject {
     private let apiClient: TicketmasterEventDetailsAPIClientProtocol
     private let cacheManager = EventDetailsCacheManager.shared
     
+    var eventImagesURLs: [String] {
+        guard let event = event else {
+            return []
+        }
+        
+        return event.images.map {
+            $0.url
+        }
+    }
+    
     init(eventId: String,
          apiClient: TicketmasterEventDetailsAPIClientProtocol) {
         self.apiClient = TicketmasterEventDetailsAPIClient(eventId: eventId)

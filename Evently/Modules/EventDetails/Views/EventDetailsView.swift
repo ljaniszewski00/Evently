@@ -3,6 +3,8 @@ import SwiftUI
 struct EventDetailsView: View {
     @StateObject private var viewModel: EventDetailsViewModel
     
+    @Namespace var namespace: Namespace.ID
+    
     init(eventId: String) {
         self._viewModel = StateObject(
             wrappedValue: EventDetailsViewModel(
@@ -13,87 +15,22 @@ struct EventDetailsView: View {
     }
     
     var body: some View {
-        List {
-            if let event = viewModel.event {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Galeria zdjęć
-                    TabView {
-                        ForEach(event.images, id: \.url) { image in
-                            AsyncImage(url: URL(string: image.url)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                            } placeholder: {
-                                Color.gray.opacity(0.3)
-                            }
-                        }
-                    }
-                    .frame(height: 300)
-                    .tabViewStyle(PageTabViewStyle())
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(event.name)
-                            .font(.title)
-                            .fontWeight(.bold)
-                        
-                        Text(formattedDateTime)
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Lokalizacja")
-                                .font(.headline)
-                            
-                            if let place = event.place {
-                                Text(place.name)
-                                if let address = place.address.line1 {
-                                    Text(address)
-                                }
-                            }
-                            
-                        }
-                        
-                        Text("Ceny biletów")
-                            .font(.headline)
-                        Text(priceRange)
-                    }
-                    .padding()
+        ScrollView {
+            VStack {
+                if let eventDetails = viewModel.event {
+                    Views.EventImagesTabView(imagesURLs: viewModel.eventImagesURLs)
                 }
-                .listRowBackground(EmptyView())
-                .listRowSeparator(.hidden)
             }
         }
+        .ignoresSafeArea()
         .refreshable {
             await viewModel.loadEventDetailsFromAPI()
         }
-        .listStyle(.plain)
-        .navigationBarTitleDisplayMode(.inline)
         .alert("Błąd", isPresented: $viewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "Wystąpił nieznany błąd")
         }
-        
-        if viewModel.isLoading {
-            ProgressView()
-                .frame(maxWidth: .infinity)
-        }
-    }
-    
-    private var formattedDateTime: String {
-        guard let fetchedDate = viewModel.event?.dates.startDate.localDate,
-              let date = DateFormatter.eventDateFormatter.date(from: fetchedDate) else {
-            return "Data niedostępna"
-        }
-        
-        let dateString = DateFormatter.displayDateFormatter.string(from: date)
-        
-        if let fetchedTime = viewModel.event?.dates.startDate.localTime,
-           let time = DateFormatter.eventDateFormatter.date(from: fetchedTime) {
-            return "\(DateFormatter.displayTimeFormatter.string(from: time)) \(dateString)"
-        }
-        
-        return dateString
     }
     
     private var priceRange: String {
@@ -101,5 +38,69 @@ struct EventDetailsView: View {
             return "Cena niedostępna"
         }
         return "od \(String(format: "%.2f", prices.min)) \(prices.currency)"
+    }
+}
+
+#Preview {
+    EventDetailsView(
+        eventId: "5"
+    )
+}
+
+private extension Views {
+    struct Constants {
+        static let imagePlaceholderName: String = "person.crop.circle.fill"
+    }
+    
+    struct EventImagesTabView: View {
+        @State private var currentImageIndex: Int = 0
+        let imagesURLs: [String]
+        
+        private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+        
+        var body: some View {
+            VStack {
+                TabView(selection: $currentImageIndex) {
+                    ForEach(0..<imagesURLs.count, id: \.self) { imageIndex in
+                        ZStack {
+                            AsyncImage(url: URL(string: imagesURLs[imageIndex])) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Image(.eventImageNotAvailable)
+                                    .resizable()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .aspectRatio(contentMode: .fill)
+                            .overlay {
+                                LinearGradient(
+                                    colors: [
+                                        .clear,
+                                        .clear,
+                                        .black.opacity(0.5),
+                                        .black
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            }
+                        }
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .interactive))
+                .onReceive(timer) { _ in
+                    changeImageIndexOnTimeElapse()
+                }
+                .frame(height: 400)
+                .frame(maxWidth: .infinity)
+            }
+        }
+        
+        private func changeImageIndexOnTimeElapse() {
+            withAnimation {
+                currentImageIndex = (currentImageIndex + 1) % imagesURLs.count
+            }
+        }
     }
 }
