@@ -68,19 +68,19 @@ final class EventDetailsViewModel: ObservableObject {
          apiClient: TicketmasterEventDetailsAPIClientProtocol) {
         self.apiClient = apiClient
         
-        loadEventDetailsFromCache(eventId: eventId)
+        Task(priority: .high) {
+            await loadEventDetailsFromCache(eventId: eventId)
+        }
     }
     
-    func loadEventDetailsFromCache(eventId: String) {
-        let result = cacheManager.getObjectFromCache(for: eventId)
+    func loadEventDetailsFromCache(eventId: String) async {
+        let result = await cacheManager.getObjectFromCache(for: eventId)
         
         switch result {
         case .success(let eventObjectFromCache):
             event = eventObjectFromCache.eventDetails
         case .failure(_):
-            Task {
-                await loadEventDetailsFromAPI()
-            }
+            await loadEventDetailsFromAPI()
         }
     }
     
@@ -91,7 +91,7 @@ final class EventDetailsViewModel: ObservableObject {
             event = try await apiClient.fetchEventDetails()
             
             if let event = event {
-                saveEventDetailsToCache(eventDetails: event)
+                await saveEventDetailsToCache(eventDetails: event)
             }
         } catch {
             handleError(error)
@@ -100,8 +100,8 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading = false
     }
     
-    private func saveEventDetailsToCache(eventDetails: EventDetails) {
-        cacheManager.addObjectToCache(
+    private func saveEventDetailsToCache(eventDetails: EventDetails) async {
+        await cacheManager.addObjectToCache(
             eventDetails.toObject(),
             for: eventDetails.id
         )

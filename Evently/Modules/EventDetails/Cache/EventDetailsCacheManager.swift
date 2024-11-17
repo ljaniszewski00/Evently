@@ -1,6 +1,6 @@
 import Foundation
 
-final class EventDetailsCacheManager {
+final actor EventDetailsCacheManager {
     typealias KeyType = NSString
     typealias Value = EventDetailsObject
     

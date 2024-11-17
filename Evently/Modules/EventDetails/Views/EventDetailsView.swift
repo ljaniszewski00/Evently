@@ -31,7 +31,7 @@ struct EventDetailsView: View {
         }
         .ignoresSafeArea()
         .refreshable {
-            Task {
+            Task(priority: .high) {
                 await viewModel.loadEventDetailsFromAPI()
             }
         }

@@ -17,7 +17,7 @@ struct EventsListView: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
                     .onAppear {
-                        Task {
+                        Task(priority: .high) {
                             await viewModel.loadMoreEvents()
                         }
                     }
@@ -29,7 +29,7 @@ struct EventsListView: View {
             .listStyle(.plain)
             .scrollIndicators(.hidden)
             .refreshable {
-                Task {
+                Task(priority: .high) {
                     await viewModel.loadFirstEvents()
                 }
             }

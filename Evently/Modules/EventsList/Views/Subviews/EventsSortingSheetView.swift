@@ -18,7 +18,9 @@ struct EventsSortingSheetView: View {
                                spacing: Views.Constants.innerVStackSpacing) {
                             ForEach(sortingKey.availableSortingValues) { sortingValue in
                                 Button {
-                                    chooseSortingButtonTapped(with: sortingKey, and: sortingValue)
+                                    withAnimation {
+                                        chooseSortingButtonTapped(with: sortingKey, and: sortingValue)
+                                    }
                                 } label: {
                                     let availableSortingStrategy: EventsSortingStrategy = (sortingKey, sortingValue)
                                     
@@ -55,7 +57,7 @@ struct EventsSortingSheetView: View {
         with key: EventsSortingKey,
         and value: EventsSortingValue
     ) {
-        Task {
+        Task(priority: .high) {
             await eventsListViewModel.chooseEventsSortingStrategy(
                 sortingKey: key,
                 sortingValue: value

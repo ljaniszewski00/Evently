@@ -21,7 +21,7 @@ final class EventsListViewModel: ObservableObject {
     init(apiClient: TicketmasterEventsAPIClientProtocol) {
         self.apiClient = apiClient
         
-        Task {
+        Task(priority: .high) {
             await loadFirstEvents()
         }
     }
