@@ -12,37 +12,43 @@ final class EventDetailsViewModelTests: XCTestCase {
     
     // MARK: - Tests
     
-    func test_whenInitialized_andCacheIsEmpty_thenLoadFromAPI() async {
+    func test_whenLoadEventDetailsFromAPI_succeeds_thenUpdateEventDetails() async {
         // given
         sut = makeSUT()
         
         // then
+        XCTAssertNil(sut.event)
+        
+        // given
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
+        
+        // when
+        Task {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            expectation.fulfill()
+        }
+        
+        // then
+        await fulfillment(of: [expectation])
         XCTAssertEqual(sut.event, EventDetails.sampleEventDetails)
         XCTAssertFalse(sut.isLoading)
         XCTAssertFalse(sut.showError)
         XCTAssertNil(sut.errorMessage)
     }
     
-    func test_whenLoadEventDetailsFromAPI_succeeds_thenUpdateEventDetails() async {
-        // given
-        sut = makeSUT()
-        
-        // when
-        await sut.loadEventDetailsFromAPI()
-        
-        // then
-        XCTAssertEqual(sut.event, EventDetails.sampleEventDetails)
-        XCTAssertFalse(sut.isLoading)
-    }
-    
     func test_whenEventDetailsLoaded_thenFormattedPropertiesAreCorrect() async {
         // given
         sut = makeSUT()
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
         
         // when
-        await sut.loadEventDetailsFromAPI()
+        Task {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            expectation.fulfill()
+        }
         
         // then
+        await fulfillment(of: [expectation])
         XCTAssertEqual(sut.eventImagesURLs, EventDetails.sampleEventDetails.images.map { $0.url })
         XCTAssertEqual(sut.eventClassificationFormatted,
                       "\(EventDetails.sampleEventDetails.classifications[0].segment.name) • \(EventDetails.sampleEventDetails.classifications[0].genre.name)")
@@ -59,11 +65,16 @@ final class EventDetailsViewModelTests: XCTestCase {
     func test_whenLoadEventDetailsFromAPI_fails_thenShowError() async {
         // given
         sut = makeSUTWithError()
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
         
         // when
-        await sut.loadEventDetailsFromAPI()
+        Task {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            expectation.fulfill()
+        }
         
         // then
+        await fulfillment(of: [expectation])
         XCTAssertTrue(sut.showError)
         XCTAssertNotNil(sut.errorMessage)
         XCTAssertFalse(sut.isLoading)
