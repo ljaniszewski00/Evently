@@ -16,7 +16,7 @@ iOS app created for exploring events available from [Ticketmaster Discovery API]
 * Swift (SwiftUI)
 * Xcode 16.1
 * MVVM (Model-View-ViewModel) architecture
-* Async/Await for concurrency
+* Structured concurrency (async/await)
 * [NSCache](https://developer.apple.com/documentation/foundation/nscache) for caching loaded episodes info
 * Pop-up error handling
 * Native pull to refresh
