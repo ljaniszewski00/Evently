@@ -92,7 +92,7 @@ struct EventsGridCell: View {
                             VStack(alignment: .leading,
                                    spacing: Views.Constants.cellPlaceVenueVStackSpacing) {
                                 Text(venue.name)
-                                Text("\(venue.city.name), \(venue.country.name)")
+                                Text(venue.city.name)
                             }
                             .fixedSize(horizontal: false, vertical: true)
                         } else {

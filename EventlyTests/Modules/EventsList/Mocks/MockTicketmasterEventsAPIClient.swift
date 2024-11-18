@@ -1,6 +1,6 @@
 @testable import Evently
 
-struct MockTicketmasterEventsAPIClientWithTwoEvents: TicketmasterEventsAPIClientProtocol {
+actor MockTicketmasterEventsAPIClientWithTwoEvents: TicketmasterEventsAPIClientProtocol {
     func fetchEvents(
         country: String,
         page: String,
@@ -14,7 +14,7 @@ struct MockTicketmasterEventsAPIClientWithTwoEvents: TicketmasterEventsAPIClient
     }
 }
 
-struct MockTicketmasterEventsAPIClientWithDecodingFailure: TicketmasterEventsAPIClientProtocol {
+actor MockTicketmasterEventsAPIClientWithDecodingFailure: TicketmasterEventsAPIClientProtocol {
     func fetchEvents(
         country: String,
         page: String,

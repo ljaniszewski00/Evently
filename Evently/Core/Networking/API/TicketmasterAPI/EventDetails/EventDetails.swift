@@ -115,4 +115,57 @@ extension EventDetails {
             staticUrl: "https://maps.ticketmaster.com/maps/geometry/3/event/19005D0B8F9014F6/staticImage?type=png&systemId=HOST"
         )
     )
+    
+    static let secondSampleEventDetails: EventDetails = EventDetails(
+        id: "Second Sample Event Details",
+        name: "Radiohead Maybe?",
+        dates: EventDates(
+            startDate: EventStartDate(
+                localDate: "2016-07-27",
+                localTime: "19:30:00",
+                dateTime: "2016-07-27T23:30:00Z"
+            )
+        ),
+        place: EventPlace(
+            name: "Madison Square Garden",
+            address: EventAddress(
+                line1: "7th Ave & 32nd Street",
+                line2: nil,
+                line3: nil),
+            city: EventCity(name: "New York"),
+            country: EventCountry(name: "United States of America")
+        ),
+        classifications: [
+            EventClassifications(
+                segment: EventSegment(name: "Music"),
+                genre: EventGenre(name: "Rock"),
+                subgenre: EventSubgenre(name: "Alternative Rock"))
+        ],
+        priceRanges: [
+            EventPriceRange(
+                min: 80,
+                max: 80,
+                currency: "USD")
+        ],
+        embedded: EventEmbedded(
+            venues: [
+                EventPlace(
+                    name: "Madison Square Garden",
+                    address: EventAddress(
+                        line1: "7th Ave & 32nd Street",
+                        line2: nil,
+                        line3: nil),
+                    city: EventCity(name: "New York"),
+                    country: EventCountry(name: "United States of America")
+                )
+            ]
+        ),
+        images: [
+            EventImage(url: "http://s1.ticketm.net/dam/a/c4c/e751ab33-b9cd-4d24-ad4a-5ef79faa7c4c_72681_EVENT_DETAIL_PAGE_16_9.jpg"),
+            EventImage(url: "http://s1.ticketm.net/dam/a/c4c/e751ab33-b9cd-4d24-ad4a-5ef79faa7c4c_72681_RETINA_LANDSCAPE_16_9.jpg"),
+        ],
+        seatMap: EventSeatMap(
+            staticUrl: "https://maps.ticketmaster.com/maps/geometry/3/event/19005D0B8F9014F6/staticImage?type=png&systemId=HOST"
+        )
+    )
 }

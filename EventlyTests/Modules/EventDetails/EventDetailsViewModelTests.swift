@@ -12,7 +12,7 @@ final class EventDetailsViewModelTests: XCTestCase {
     
     // MARK: - Tests
     
-    func test_whenLoadEventDetailsFromAPI_succeeds_thenUpdateEventDetails() async {
+    func test_whenLoadEventDetailsFromCache_succeeds_thenUpdateEventDetails() async {
         // given
         sut = makeSUT()
         
@@ -20,7 +20,7 @@ final class EventDetailsViewModelTests: XCTestCase {
         XCTAssertNil(sut.event)
         
         // given
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded from cache")
         
         // when
         Task {
@@ -30,16 +30,16 @@ final class EventDetailsViewModelTests: XCTestCase {
         
         // then
         await fulfillment(of: [expectation])
-        XCTAssertEqual(sut.event, EventDetails.sampleEventDetails)
+        XCTAssertEqual(sut.event, EventDetails.secondSampleEventDetails)
         XCTAssertFalse(sut.isLoading)
         XCTAssertFalse(sut.showError)
         XCTAssertNil(sut.errorMessage)
     }
     
-    func test_whenEventDetailsLoaded_thenFormattedPropertiesAreCorrect() async {
+    func test_loadEventDetailsFromAPI_overwrites_eventDetailsFromCache() async {
         // given
         sut = makeSUT()
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded from cache")
         
         // when
         Task {
@@ -49,23 +49,43 @@ final class EventDetailsViewModelTests: XCTestCase {
         
         // then
         await fulfillment(of: [expectation])
-        XCTAssertEqual(sut.eventImagesURLs, EventDetails.sampleEventDetails.images.map { $0.url })
-        XCTAssertEqual(sut.eventClassificationFormatted,
-                      "\(EventDetails.sampleEventDetails.classifications[0].segment.name) • \(EventDetails.sampleEventDetails.classifications[0].genre.name)")
-        XCTAssertEqual(sut.eventDateTimeFormatted,
-                      "\(EventDetails.sampleEventDetails.dateString!), \(EventDetails.sampleEventDetails.timeString!)")
-        XCTAssertEqual(sut.eventPriceFormatted,
-                      "\(String(format: "%.2f", EventDetails.sampleEventDetails.priceRanges![0].min)) \(EventDetails.sampleEventDetails.priceRanges![0].currency)")
-        XCTAssertEqual(sut.eventSeatMapURL,
-                      URL(string: EventDetails.sampleEventDetails.seatMap!.staticUrl))
+        XCTAssertEqual(sut.event, EventDetails.secondSampleEventDetails)
+        
+        // when
+        await sut.loadEventDetailsFromAPI()
+        
+        // then
+        XCTAssertEqual(sut.event, EventDetails.sampleEventDetails)
     }
     
-    // MARK: - Shared Cache Problem; Will success when executed separately; Will fail when executed with other tests simultaneously
+    func test_whenEventDetailsLoaded_thenFormattedPropertiesAreCorrect() async {
+        // given
+        sut = makeSUT()
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded from cache")
+        
+        // when
+        Task {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            expectation.fulfill()
+        }
+        
+        // then
+        await fulfillment(of: [expectation])
+        XCTAssertEqual(sut.eventImagesURLs, EventDetails.secondSampleEventDetails.images.map { $0.url })
+        XCTAssertEqual(sut.eventClassificationFormatted,
+                      "\(EventDetails.secondSampleEventDetails.classifications[0].segment.name) • \(EventDetails.secondSampleEventDetails.classifications[0].genre.name)")
+        XCTAssertEqual(sut.eventDateTimeFormatted,
+                      "\(EventDetails.secondSampleEventDetails.dateString!), \(EventDetails.secondSampleEventDetails.timeString!)")
+        XCTAssertEqual(sut.eventPriceFormatted,
+                      "\(String(format: "%.2f", EventDetails.secondSampleEventDetails.priceRanges![0].min)) \(EventDetails.secondSampleEventDetails.priceRanges![0].currency)")
+        XCTAssertEqual(sut.eventSeatMapURL,
+                      URL(string: EventDetails.secondSampleEventDetails.seatMap!.staticUrl))
+    }
     
     func test_whenLoadEventDetailsFromAPI_fails_thenShowError() async {
         // given
         sut = makeSUTWithError()
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should be loaded")
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Data should not be loaded")
         
         // when
         Task {
@@ -80,8 +100,6 @@ final class EventDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isLoading)
         XCTAssertNil(sut.event)
     }
-    
-    // MARK: - Shared Cache Problem; Will success when executed separately; Will fail when executed with other tests simultaneously
     
     func test_whenNoEventData_thenFormattedPropertiesAreNilOrEmpty() {
         // given
@@ -98,18 +116,24 @@ final class EventDetailsViewModelTests: XCTestCase {
     // MARK: - Helpers
     
     private func makeSUT() -> EventDetailsViewModel {
-        let apiClient = MockTicketmasterEventDetailsAPIClientWithSuccess()
+        let apiClient: TicketmasterEventDetailsAPIClientProtocol = MockTicketmasterEventDetailsAPIClientWithSuccess()
+        let cacheManager: EventDetailsCacheManaging = MockFilledEventDetailsCacheManager()
+        
         return EventDetailsViewModel(
             eventId: EventDetails.sampleEventDetails.id,
-            apiClient: apiClient
+            apiClient: apiClient,
+            cacheManager: cacheManager
         )
     }
     
     private func makeSUTWithError() -> EventDetailsViewModel {
-        let apiClient = MockTicketmasterEventDetailsAPIClientWithDecodingFailure()
+        let apiClient: TicketmasterEventDetailsAPIClientProtocol = MockTicketmasterEventDetailsAPIClientWithDecodingFailure()
+        let cacheManager: EventDetailsCacheManaging = MockEmptyEventDetailsCacheManager()
+        
         return EventDetailsViewModel(
             eventId: EventDetails.sampleEventDetails.id,
-            apiClient: apiClient
+            apiClient: apiClient,
+            cacheManager: cacheManager
         )
     }
 }

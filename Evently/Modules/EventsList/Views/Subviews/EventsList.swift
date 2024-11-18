@@ -53,7 +53,7 @@ struct EventsListCell: View {
                             Image(systemName: Views.Constants.placeImage)
                             
                             if let venue = event.embedded.venues.first {
-                                Text("\(venue.name) • \(venue.city.name), \(venue.country.name)")
+                                Text("\(venue.name) • \(venue.city.name)")
                             } else {
                                 Text(Views.Constants.placeNotAvailable)
                             }

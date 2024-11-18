@@ -7,7 +7,8 @@ struct EventDetailsView: View {
         self._viewModel = StateObject(
             wrappedValue: EventDetailsViewModel(
                 eventId: eventId,
-                apiClient: TicketmasterEventDetailsAPIClient(eventId: eventId)
+                apiClient: TicketmasterEventDetailsAPIClient(eventId: eventId),
+                cacheManager: EventDetailsCacheManager.shared
             )
         )
     }

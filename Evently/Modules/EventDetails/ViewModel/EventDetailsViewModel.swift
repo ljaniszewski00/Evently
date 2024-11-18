@@ -9,7 +9,7 @@ final class EventDetailsViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let apiClient: TicketmasterEventDetailsAPIClientProtocol
-    private let cacheManager = EventDetailsCacheManager.shared
+    private let cacheManager: EventDetailsCacheManaging
     
     var eventImagesURLs: [String] {
         guard let event = event else {
@@ -65,8 +65,10 @@ final class EventDetailsViewModel: ObservableObject {
     }
     
     init(eventId: String,
-         apiClient: TicketmasterEventDetailsAPIClientProtocol) {
+         apiClient: TicketmasterEventDetailsAPIClientProtocol,
+         cacheManager: EventDetailsCacheManaging) {
         self.apiClient = apiClient
+        self.cacheManager = cacheManager
         
         Task(priority: .high) {
             await loadEventDetailsFromCache(eventId: eventId)
